@@ -1,0 +1,7 @@
+.idea
+/build/
+/devTools/
+/dist/
+/release/
+/node_modules/
+*.log

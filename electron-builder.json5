@@ -1,0 +1,26 @@
+/**
+ * @see https://www.electron.build/configuration/configuration
+ */
+{
+  "productName": "KULOG",
+  "appId": "kulog.oxizen",
+  "files": [
+    "dist/**/*",
+  ],
+  "directories": {
+    "output": "release/${version}",
+  },
+  "mac": {
+    "icon": "icons/icon.icns",
+    "category": "public.app-category.utilities",
+    "artifactName": "${productName}-${version}-${arch}.${ext}",
+  },
+  "win": {
+    "icon": "icons/icon.ico",
+    "artifactName": "${productName}-${version}-${os}.${ext}",
+  },
+  "nsis": {
+    "createDesktopShortcut": true,
+    "artifactName": "${productName}-${version}.${ext}"
+  },
+}

@@ -1,0 +1,11 @@
+@import 'base.less';
+@import 'proj.less';
+
+body { .bgc(#14131c); .c(#fff); .crop; .m; }
+#app { .h(100vh); .flex; .flex-column; }
+* {
+  &::-webkit-scrollbar { .wh(6); }
+  &::-webkit-scrollbar-track { .bgc(transparent); }
+  &::-webkit-scrollbar-thumb { .bgc(#666); .br(2); }
+  &::-webkit-scrollbar-corner { .bgc(transparent); }
+}
