@@ -3,6 +3,8 @@
   "npmClient": "yarn",
   "version": "0.0.1",
   "main": "dist/main.js",
+  "author": "Ben Heo <oxizen@gmail.com>",
+  "license": "MIT",
   "engines": {
     "node": ">=16"
   },
