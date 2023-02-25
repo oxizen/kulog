@@ -5,13 +5,16 @@ import { FitAddon } from 'xterm-addon-fit';
 import { useConnectLog } from '@/hooks/useConnectLog';
 import { setDrag, setResize } from '@/utils/panelUtil';
 import { useAlignState } from '@/stores/alignState';
-
+let logResize: ((cols: number, rows: number) => void) | undefined;
 const props = defineProps({
   namespace: { type: String, required: true },
   pod: { type: String, required: true },
 });
 defineEmits(['order-up']);
-defineExpose({ fit: () => fitAddon.fit()});
+defineExpose({ fit: () => {
+  fitAddon.fit();
+  logResize?.(terminal.cols, terminal.rows);
+}});
 
 const alignState = useAlignState();
 const el = ref<HTMLElement | null>(null);
@@ -36,6 +39,7 @@ const startResize = (e:MouseEvent) => {
   resizing.value = true;
   setResize(e, box.value, () => {
     fitAddon.fit();
+    logResize?.(terminal.cols, terminal.rows);
     resizing.value = false;
     alignState.setAlign('·');
   });
@@ -45,7 +49,7 @@ onBeforeUnmount(() => terminal.dispose());
 onMounted(async () => {
   terminal.open(box.value!);
   fitAddon.fit();
-  await useConnectLog(props.namespace, props.pod, (log, killEvent) => {
+  logResize = await useConnectLog(props.namespace, props.pod, terminal.cols, terminal.rows, (log, killEvent) => {
     if (killEvent) killed.value = true;
     terminal.write(log);
   });

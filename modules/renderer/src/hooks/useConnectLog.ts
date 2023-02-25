@@ -2,7 +2,7 @@ import { onBeforeUnmount } from 'vue';
 
 let sq = 0;
 const callbacks: Record<number, (log: string, exitEvent?: ObjectLiteral) => void> = {};
-export const useConnectLog = async (namespace: string, pod: string, callback: (log: string, exitEvent?: ObjectLiteral) => void) => {
+export const useConnectLog = async (namespace: string, pod: string, cols: number, rows: number, callback: (log: string, exitEvent?: ObjectLiteral) => void) => {
   sq += 1;
   const channel = sq;
   callbacks[channel] = callback;
@@ -10,7 +10,8 @@ export const useConnectLog = async (namespace: string, pod: string, callback: (l
     delete callbacks[channel];
     window.app.invoke('killLog', channel);
   });
-  await window.app.invoke('connectLog', { namespace, pod, channel });
+  await window.app.invoke('connectLog', { namespace, pod, cols, rows, channel });
+  return (cols: number, rows: number) => window.app.invoke('resizeLog', { channel, cols, rows });
 };
 
 export const init = () => {
