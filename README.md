@@ -6,3 +6,4 @@ It is a tool that allows you to easily check k8s pod logs by opening them by <b>
 
 ❗️Those who can already check logs with `kubectl` can use it. ❗
 
+* execute the command to run Mac(OSX) `xattr -cr /Applications/KULOG.app`
