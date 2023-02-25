@@ -5,8 +5,7 @@ import { build as viteBuild, createLogger } from 'vite';
 import { baseBuildConfig } from './config.mjs';
 import commandLineArgs from 'command-line-args';
 
-const { publish, target } = commandLineArgs([
-  { name: 'publish', alias: 'p', type: String },
+const { target } = commandLineArgs([
   { name: 'target', alias: 't', type: String },
 ]);
 
@@ -21,9 +20,9 @@ const buildVitePackages = async (...moduleNames) => {
   }
 };
 const targets = {
-  mac_arm64: () => electronBuild({ targets: createTargets([Platform.MAC], 'default', 'arm64'), publish }),
-  mac_x64: () => electronBuild({ targets: createTargets([Platform.MAC], 'default', 'x64'), publish }),
-  win_x64: () => electronBuild({ targets: createTargets([Platform.WINDOWS], 'nsis', 'x64'), win: ['nsis', 'zip'], publish })
+  mac_arm64: () => electronBuild({ targets: createTargets([Platform.MAC], 'default', 'arm64') }),
+  mac_x64: () => electronBuild({ targets: createTargets([Platform.MAC], 'default', 'x64') }),
+  win_x64: () => electronBuild({ targets: createTargets([Platform.WINDOWS], 'nsis', 'x64'), win: ['nsis', 'zip'] })
 };
 const build = async () => {
   if (!(target in targets)) throw `--target option must be one of ${Object.keys(targets).join(', ')}`;

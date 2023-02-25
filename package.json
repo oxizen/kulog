@@ -11,7 +11,7 @@
     "start": "node scripts/dev.mjs",
     "dev": "cross-env VITE_DEBUG=1 yarn start",
     "prebuild": "rimraf dist",
-    "build": "node scripts/build.mjs --publish always"
+    "build": "node scripts/build.mjs"
   },
   "dependencies": {
     "debounce": "^1.2.1",
