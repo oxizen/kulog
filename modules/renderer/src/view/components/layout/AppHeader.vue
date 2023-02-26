@@ -8,7 +8,7 @@ import { useAlignState } from '@/stores/alignState';
 
 const kubeConfig = useKubeConfig();
 const kubeState = useKubeState();
-const { setLogState, locked } = useLogState();
+const logState = useLogState();
 const alignState = useAlignState();
 kubeConfig.init();
 
@@ -49,7 +49,7 @@ const close = () => window.app.invoke('quitApp');
         <span>Deployment</span>
         <SimpleSelect v-model:value="deployment" :options="kubeState.deploymentList" placeholder="ALL"/>
       </label>
-      <button @click="setLogState({ namespace, deployment })" :class="{ locked }">
+      <button class="refresh" @click="logState.setLogState({ namespace, deployment })" :class="{ locked: logState.locked }">
         <img src="/refresh.svg" alt="refresh">
       </button>
     </template>
@@ -71,6 +71,11 @@ const close = () => window.app.invoke('quitApp');
   select { .h(20); .min-w(100); .br(4); }
   label { .rel; .flex; .items-center; .gap(8); .p(10);
     span { .fs(16,24); .monospace; .app-drag; }
+  }
+  .refresh {
+    &.locked { .events-none;
+      img { animation: rotation 0.7s infinite linear; }
+    }
   }
   .handle { .h(40); .flex-grow; .app-drag; }
   .align { .flex; .monospace; .bgc(#444); .fs(18); .br(4); .crop;

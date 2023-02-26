@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { useConnectLog } from '@/hooks/useConnectLog';
 import { setDrag, setResize } from '@/utils/panelUtil';
 import { useAlignState } from '@/stores/alignState';
-let logResize: ((cols: number, rows: number) => void) | undefined;
+import { useLogState } from '@/stores/logState';
+let connection: { resize: (cols: number, rows: number) => void, reconnect: () => void } | undefined;
+const logState = useLogState();
 const props = defineProps({
   namespace: { type: String, required: true },
   pod: { type: String, required: true },
@@ -13,7 +15,7 @@ const props = defineProps({
 defineEmits(['order-up']);
 defineExpose({ fit: () => {
   fitAddon.fit();
-  logResize?.(terminal.cols, terminal.rows);
+  connection?.resize(terminal.cols, terminal.rows);
 }});
 
 const alignState = useAlignState();
@@ -39,17 +41,24 @@ const startResize = (e:MouseEvent) => {
   resizing.value = true;
   setResize(e, box.value, () => {
     fitAddon.fit();
-    logResize?.(terminal.cols, terminal.rows);
+    connection?.resize(terminal.cols, terminal.rows);
     resizing.value = false;
     alignState.setAlign('F');
   });
 };
 
+watch(logState, () => {
+  if (killed.value && !logState.locked) {
+    killed.value = false;
+    terminal.clear();
+    connection?.reconnect();
+  }
+});
 onBeforeUnmount(() => terminal.dispose());
 onMounted(async () => {
   terminal.open(box.value!);
   fitAddon.fit();
-  logResize = await useConnectLog(props.namespace, props.pod, terminal.cols, terminal.rows, (log, killEvent) => {
+  connection = await useConnectLog(props.namespace, props.pod, terminal.cols, terminal.rows, (log, killEvent) => {
     if (killEvent) killed.value = true;
     terminal.write(log);
   });
