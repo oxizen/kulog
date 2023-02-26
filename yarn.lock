@@ -2481,11 +2481,6 @@ jake@^10.8.5:
     filelist "^1.0.1"
     minimatch "^3.0.4"
 
-js-easing-functions@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.npmjs.org/js-easing-functions/-/js-easing-functions-1.0.3.tgz"
-  integrity sha512-skDTLPuwWvAVYQVPwmjcFuCv8i8jtVD4L4FELxICwbS1HWFhs+627vOdDhQUGJMe9os6QO2XgEI4qb5umiUQFg==
-
 js-sdsl@^4.1.4:
   version "4.3.0"
   resolved "https://registry.npmjs.org/js-sdsl/-/js-sdsl-4.3.0.tgz"

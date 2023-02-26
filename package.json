@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "debounce": "^1.2.1",
-    "js-easing-functions": "^1.0.3",
     "js-yaml": "^4.1.0",
     "node-pty": "^0.10.1",
     "pinia": "^2.0.28",
