@@ -50,16 +50,17 @@ const close = () => window.app.invoke('quitApp');
         <SimpleSelect v-model:value="deployment" :options="kubeState.deploymentList" placeholder="ALL"/>
       </label>
       <button class="refresh" @click="logState.setLogState({ namespace, deployment })" :class="{ locked: logState.locked }">
-        <img src="/refresh.svg" alt="refresh">
+        <img src="@/assets/refresh.svg" alt="refresh">
       </button>
     </template>
     <div class="handle"></div>
     <ul class="align">
       <li v-for="v in 'FVH'" :key="v" :class="{ active: v === alignState.align }" @click="alignState.setAlign(v)">
-        <img :src="v === 'F' ? '/free.png' : '/align.png'" :alt="v" :class="v">
+        <img v-if="v === 'F'" src="@/assets/free.png" alt="free">
+        <img v-else src="@/assets/align.png" alt="align" :class="v">
       </li>
     </ul>
-    <button class="close" @click="close"><img src="/close.svg" alt="close"></button>
+    <button class="close" @click="close"><img src="@/assets/close.svg" alt="close"></button>
   </header>
 </template>
 
