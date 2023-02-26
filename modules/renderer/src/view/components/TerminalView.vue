@@ -33,7 +33,7 @@ const fitAddon = new FitAddon();
 terminal.loadAddon(fitAddon);
 
 const startDrag = (e: MouseEvent) => setDrag(e, el.value, () => {
-  alignState.setAlign('·');
+  alignState.setAlign('F');
 });
 const startResize = (e:MouseEvent) => {
   resizing.value = true;
@@ -41,7 +41,7 @@ const startResize = (e:MouseEvent) => {
     fitAddon.fit();
     logResize?.(terminal.cols, terminal.rows);
     resizing.value = false;
-    alignState.setAlign('·');
+    alignState.setAlign('F');
   });
 };
 
@@ -74,7 +74,7 @@ onMounted(async () => {
   .wrapper { .p(2); }
   .box { .pl(4); .wh(600,304); .crop; }
   .resize-handle { .abs; .rb; .wh(8); cursor: nwse-resize; }
-  &.killed { .o(0.5); }
+  &.killed { filter: brightness(50%); }
   &.resizing .box { filter: blur(2px); }
 }
 </style>

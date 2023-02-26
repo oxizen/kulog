@@ -20,7 +20,9 @@ const init = (window: MainWindow) => {
     ptyMap[channel] = proc;
   });
   ipcMain.handle('resizeLog', (e: unknown, { channel, cols, rows }: ResizeParam) => {
-    ptyMap[channel].resize(cols, rows);
+    try {
+      ptyMap[channel].resize(cols, rows);
+    } catch (e) { /* empty */ }
   });
   ipcMain.handle('killLog', (e: unknown, channel: number) => {
     const proc = ptyMap[channel];

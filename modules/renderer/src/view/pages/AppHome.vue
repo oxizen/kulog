@@ -24,7 +24,7 @@ watch(logState, () => {
 });
 
 const alignWhenFit = debounce(() => {
-  if (alignState.align === '·') return;
+  if (alignState.align === 'F') return;
   align();
 }, 500);
 

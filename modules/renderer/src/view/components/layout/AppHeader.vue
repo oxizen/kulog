@@ -55,7 +55,9 @@ const close = () => window.app.invoke('quitApp');
     </template>
     <div class="handle"></div>
     <ul class="align">
-      <li v-for="v in '·ㄱㄴ'" :key="v" :class="{ active: v === alignState.align }" @click="alignState.setAlign(v)">{{ v }}</li>
+      <li v-for="v in 'FVH'" :key="v" :class="{ active: v === alignState.align }" @click="alignState.setAlign(v)">
+        <img :src="v === 'F' ? '/free.png' : '/align.png'" :alt="v" :class="v">
+      </li>
     </ul>
     <button class="close" @click="close"><img src="/close.svg" alt="close"></button>
   </header>
@@ -74,6 +76,9 @@ const close = () => window.app.invoke('quitApp');
   .align { .flex; .monospace; .bgc(#444); .fs(18); .br(4); .crop;
     li { .p(2,8); .pointer;
       &.active { .bgc(#666); }
+      img { .wh(24); .block;
+        &.V { .t-r(90deg); }
+      }
     }
     li + li { .-l(#555); }
   }

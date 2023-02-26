@@ -42,7 +42,7 @@ export const setResize = (e: MouseEvent, target: HTMLElement | null, afterResize
 export const setPositions = (area: HTMLElement | null, align: AlignType) => {
   if (!area) return;
   const panels = area.children;
-  if (align === '·') {
+  if (align === 'F') {
     let x = 0;
     let y = 0;
     for (const p of panels) {
@@ -57,7 +57,7 @@ export const setPositions = (area: HTMLElement | null, align: AlignType) => {
     const rest = panels.length - short**2;
     const long = short + Math.ceil(rest / short);
     let h, v;
-    if (align === 'ㄱ') {
+    if (align === 'V') {
       h = long;
       v = short;
     } else {
