@@ -3,7 +3,7 @@
  */
 {
   "productName": "KULOG",
-  "appId": "kulog.oxizen",
+  "appId": "oxizen.kulog",
   "files": [
     "dist/**/*",
   ],
