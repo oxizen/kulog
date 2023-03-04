@@ -19,5 +19,10 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest',
     project: "./tsconfig.json"
+  },
+  globals: {
+    "Deployment": "readonly",
+    "DeploymentList": "readonly",
+    "PodList": "readonly"
   }
 }

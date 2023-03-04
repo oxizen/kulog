@@ -14,7 +14,8 @@ export default defineConfig({
     alias: {
       '@': join(__dirname, './src'),
       '~@': join(__dirname, './src'),
-      '@type': join(process.cwd(), '/types')
+      '@type': join(process.cwd(), '/types'),
+      '@main': join(process.cwd(), '/modules/main')
     },
   },
   server: {

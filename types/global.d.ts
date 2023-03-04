@@ -3,7 +3,7 @@ type ViteDevServer = import('vite').ViteDevServer;
 type LogLevel = import('vite').LogLevel;
 
 type OnEventKey = 'pty-log' | 'pty-log-exit';
-type InvokeEventKey = 'connectLog' | 'killLog' | 'getConfig' | 'getNamespaceList' | 'setContext' | 'getDeploymentList' | 'getPods' | 'quitApp' | 'getPath' | 'resizeLog';
+type InvokeEventKey = 'connectLog' | 'killLog' | 'getConfig' | 'getNamespaceList' | 'setContext' | 'getDeploymentList' | 'getPods' | 'quitApp' | 'getPath' | 'resizeLog' | 'openWithCode';
 type AppModule = 'renderer' | 'main' | 'preload';
 
 declare namespace Electron {

@@ -1,55 +1,37 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import { useKubeConfig } from '@/stores/kubeConfig';
-import SimpleSelect from '@/view/components/SimpleSelect.vue';
-import { useKubeState } from '@/stores/kubeState';
-import { useLogState } from '@/stores/logState';
 import { useAlignState } from '@/stores/alignState';
+import { useDrawerState } from '@/stores/drawerState';
+import { useLogState } from '@/stores/logState';
+import { useKubeState } from '@/stores/kubeState';
 
 const kubeConfig = useKubeConfig();
-const kubeState = useKubeState();
 const logState = useLogState();
 const alignState = useAlignState();
+const drawerState = useDrawerState();
+useKubeState();
 kubeConfig.init();
+const toggleDrawer = () => {
+  drawerState.setState(drawerState.state === 'OPEN' ? 'CLOSED' : 'OPEN');
+};
 
-const context = computed<string>({
-  get: () => kubeConfig.context ?? '',
-  set: async (v: string) => {
-    await window.app.invoke('setContext', v);
-    await kubeConfig.init();
-  }
-});
-
-const namespace = computed<string>({
-  get: () => kubeState.namespace,
-  set: (v: string) => kubeState.setNamespace(v)
-});
-
-const deployment = computed<string>({
-  get: () => kubeState.deployment,
-  set: (v: string) => kubeState.setDeployment(v)
-});
-
+const getLabel = (val: string) => {
+  if (!val) return '';
+  const idx = val.indexOf('/');
+  return ~idx ? val.substring(idx + 1) : val;
+};
 const close = () => window.app.invoke('quitApp');
 
 </script>
 <template>
   <header app-header>
-    <h1>KULOG</h1>
-    <label v-if="kubeConfig.contexts">
-      <span>Context</span>
-      <SimpleSelect v-model:value="context" :options="kubeConfig.contexts"/>
-    </label>
-    <label v-if="kubeConfig.namespaceList">
-      <span>Namespace</span>
-      <SimpleSelect v-model:value="namespace" :options="kubeConfig.namespaceList" placeholder="Select Namespace"/>
-    </label>
-    <template v-if="namespace">
-      <label v-if="kubeState.deploymentList">
-        <span>Deployment</span>
-        <SimpleSelect v-model:value="deployment" :options="kubeState.deploymentList" placeholder="ALL"/>
-      </label>
-      <button class="refresh" @click="logState.setLogState({ namespace, deployment })" :class="{ locked: logState.locked }">
+    <button class="drawer-switch" :class="{ open: drawerState.state === 'OPEN' }" @click="toggleDrawer"><img src="@/assets/double_arrow.svg"></button>
+    <h1><img src="@/assets/KULOG.svg" alt="KULOG"></h1>
+    <span class="badge">{{ getLabel(kubeConfig.context) }}</span>
+    <template v-if="logState.state">
+      <span class="badge">{{ logState.state?.namespace }}</span>
+      <span class="badge">{{ logState.state?.deployment || 'ALL' }}</span>
+      <button class="refresh" @click="logState.setPending(true)" :class="{ pending: logState.pending }">
         <img src="@/assets/refresh.svg" alt="refresh">
       </button>
     </template>
@@ -66,28 +48,30 @@ const close = () => window.app.invoke('quitApp');
 
 <style lang="less">
 @import "~@/less/proj.less";
-
-[app-header] { .bgc(@app-header); .flex; .items-center; .sticky; .rel; .h(40); .z(1000);
-  h1 { .app-drag; .p(0,10); .bold; .fs(24,24); .monospace; }
-  select { .h(20); .min-w(100); .br(4); }
-  label { .rel; .flex; .items-center; .gap(8); .p(10);
-    span { .fs(16,24); .monospace; .app-drag; }
+[app-header] { .bgc(@app-header); .flex; .items-center; .sticky; .rel; .h(var(--header-height)); .z(1000); .gap(10); .pl(10);
+  img { .block; }
+  h1 { .app-drag; .mr(10); }
+  .drawer-switch {
+    &.open { .t-r(180deg); }
+    img { .wh(27); }
   }
+  .badge { .monospace; .bgc(#444); .br(4); .p(2,4); .app-drag; }
   .refresh {
-    &.locked { .events-none;
+    &.pending { .events-none;
       img { animation: rotation 0.7s infinite linear; }
     }
   }
-  .handle { .h(40); .flex-grow; .app-drag; }
+  .handle { .h(var(--header-height)); .flex-grow; .app-drag; }
   .align { .flex; .monospace; .bgc(#444); .fs(18); .br(4); .crop;
-    li { .p(2,8); .pointer;
+    li { .p(2, 8); .pointer;
       &.active { .bgc(#666); }
       img { .wh(24); .block;
-        &.V { .t-r(90deg); }
+        &.H { .t-r(90deg); }
       }
     }
     li + li { .-l(#555); }
   }
-  .close { .p(0,5); }
+  .close { .p(0, 5); }
+
 }
 </style>

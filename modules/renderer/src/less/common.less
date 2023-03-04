@@ -1,8 +1,12 @@
 @import 'base.less';
 @import 'proj.less';
 
-body { .bgc(#14131c); .c(#fff); .crop; .m; }
-#app { .h(100vh); .flex; .flex-column; }
+body { .bgc(@app-bg); .c(#fff); .crop; .m; }
+
+#app { .h(100vh); .flex; .flex-column;
+  .val(--header-height, 40);
+}
+
 * {
   &::-webkit-scrollbar { .wh(6); }
   &::-webkit-scrollbar-track { .bgc(transparent); }
@@ -11,10 +15,6 @@ body { .bgc(#14131c); .c(#fff); .crop; .m; }
 }
 
 @keyframes rotation {
-  0% {
-    .t-r(0);
-  }
-  100% {
-    .t-r(360deg);
-  }
+  0% { .t-r(0); }
+  100% { .t-r(360deg); }
 }

@@ -13,8 +13,6 @@ export default class MainWindow {
       ...bound,
       show: false,
       frame: false,
-      width: 1920,
-      height: 1080,
       resizable: true,
       webPreferences: {
         nodeIntegration: false,
@@ -48,10 +46,12 @@ export default class MainWindow {
   };
 
   private addMovedEvent() {
-    this.window.addListener('moved', () => {
+    const saveBounds = () => {
       this.bounds.main = this.window.getBounds();
       setting.set('bounds', this.bounds);
-    });
+    };
+    this.window.addListener('moved', saveBounds);
+    this.window.addListener('resized', saveBounds);
   }
 
   private addClosedEvent() {

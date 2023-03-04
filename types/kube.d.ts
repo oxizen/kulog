@@ -29,6 +29,76 @@ interface LabelSelector {
   matchLabels?: { [key: string]: string; };
 }
 
+interface Container {
+  args?: Array<string>;
+  command?: Array<string>;
+  env?: Array<unknown>;
+  envFrom?: Array<unknown>;
+  image?: string;
+  imagePullPolicy?: string;
+  lifecycle?: unknown;
+  livenessProbe?: unknown;
+  name: string;
+  ports?: Array<unknown>;
+  readinessProbe?: unknown;
+  resources?: unknown;
+  securityContext?: unknown;
+  startupProbe?: unknown;
+  stdin?: boolean;
+  stdinOnce?: boolean;
+  terminationMessagePath?: string;
+  terminationMessagePolicy?: string;
+  tty?: boolean;
+  volumeDevices?: Array<unknown>;
+  volumeMounts?: Array<unknown>;
+  workingDir?: string;
+}
+
+interface PodSpec {
+  activeDeadlineSeconds?: number;
+  affinity?: unknown;
+  automountServiceAccountToken?: boolean;
+  containers: Array<Container>;
+  dnsConfig?: unknown;
+  dnsPolicy?: string;
+  enableServiceLinks?: boolean;
+  ephemeralContainers?: Array<unknown>;
+  hostAliases?: Array<unknown>;
+  hostIPC?: boolean;
+  hostNetwork?: boolean;
+  hostPID?: boolean;
+  hostUsers?: boolean;
+  hostname?: string;
+  imagePullSecrets?: Array<unknown>;
+  initContainers?: Array<unknown>;
+  nodeName?: string;
+  nodeSelector?: { [key: string]: string; };
+  os?: V1PodOS;
+  overhead?: { [key: string]: string; };
+  preemptionPolicy?: string;
+  priority?: number;
+  priorityClassName?: string;
+  readinessGates?: Array<unknown>;
+  restartPolicy?: string;
+  runtimeClassName?: string;
+  schedulerName?: string;
+  securityContext?: unknown;
+  serviceAccount?: string;
+  serviceAccountName?: string;
+  setHostnameAsFQDN?: boolean;
+  shareProcessNamespace?: boolean;
+  subdomain?: string;
+  terminationGracePeriodSeconds?: number;
+  tolerations?: Array<unknown>;
+  topologySpreadConstraints?: Array<unknown>;
+  volumes?: Array<unknown>;
+}
+
+interface PodTemplateSpec {
+  metadata: ObjectMeta;
+  spec: PodSpec;
+}
+
 interface DeploymentSpec {
   minReadySeconds?: number;
   paused?: boolean;
@@ -37,15 +107,39 @@ interface DeploymentSpec {
   revisionHistoryLimit?: number;
   selector: LabelSelector;
   strategy?: unknown;
-  template: unknown;
+  template: PodTemplateSpec;
+}
+
+type DeploymentAvailableConditionReason = 'MinimumReplicasAvailable';
+type DeploymentProgressingConditionReason = 'NewReplicaSetAvailable' | 'NewReplicaSetCreated' | 'FoundNewReplicaSet' | 'ReplicaSetUpdated';
+type DeploymentConditionReason = DeploymentAvailableConditionReason | DeploymentProgressingConditionReason;
+interface DeploymentCondition {
+  lastTransitionTime?: Date;
+  lastUpdateTime?: Date;
+  message?: string;
+  reason?: DeploymentConditionReason;
+  status: 'True' | 'False';
+  type: 'Available' | 'Progressing' | 'ReplicaFailure';
+}
+
+interface DeploymentStatus {
+  availableReplicas?: number;
+  collisionCount?: number;
+  conditions: Array<DeploymentCondition>;
+  observedGeneration?: number;
+  readyReplicas?: number;
+  replicas?: number;
+  unavailableReplicas?: number;
+  updatedReplicas?: number;
+
 }
 
 interface Deployment {
   apiVersion?: string;
   kind?: string;
-  metadata?: ObjectMeta;
-  spec?: DeploymentSpec;
-  status?: unknown;
+  metadata: ObjectMeta;
+  spec: DeploymentSpec;
+  status: DeploymentStatus;
 }
 
 interface DeploymentList {

@@ -19,7 +19,7 @@ const execOut = (command: string) => new Promise<string>((resolve, reject) => {
 const setContext = (e: unknown, context: string) => execOut(`kubectl config use-context ${context}`);
 const getNamespaceList = async () => tsvParser.parse(await execOut('kubectl get namespace'));
 const getDeploymentList = async (e: unknown, namespace: string) => JSON.parse(await execOut(`kubectl get deployment -n ${namespace} -o json`));
-const getPods = async (e: unknown, namespace: string, deployment: string) => tsvParser.parse(await execOut(`kubectl get pods -n ${namespace} ${deployment}`));
+const getPods = async (e: unknown, namespace: string, filter: string) => tsvParser.parse(await execOut(`kubectl get pods -n ${namespace} ${filter}`));
 
 const init = () => {
   ipcMain.handle('getConfig', getConfig);
