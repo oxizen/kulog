@@ -21,7 +21,7 @@ defineExpose({ fit: () => {
 const alignState = useAlignState();
 const el = ref<HTMLElement | null>(null);
 const box = ref<HTMLElement | null>(null);
-const killed = ref<boolean>(false);
+const terminated = ref<boolean>(false);
 const resizing = ref<boolean>(false);
 const terminal = new Terminal({
   cursorBlink: true,
@@ -47,9 +47,16 @@ const startResize = (e:MouseEvent) => {
   });
 };
 
+const pending = ref(false);
+const openWithCode = async () => {
+  pending.value = true;
+  await window.app.invoke('openWithCode', props.namespace, props.pod);
+  pending.value = false;
+};
+
 watch(logState, () => {
-  if (killed.value && !logState.locked) {
-    killed.value = false;
+  if (terminated.value && !logState.pending) {
+    terminated.value = false;
     terminal.clear();
     connection?.reconnect();
   }
@@ -59,19 +66,21 @@ onMounted(async () => {
   terminal.open(box.value!);
   fitAddon.fit();
   connection = await useConnectLog(props.namespace, props.pod, terminal.cols, terminal.rows, (log, killEvent) => {
-    if (killEvent) killed.value = true;
+    if (killEvent) terminated.value = true;
     terminal.write(log);
   });
 });
 </script>
 
 <template>
-  <div terminal-view :class="{ killed, resizing }" ref="el" @mousedown="$emit('order-up', pod)">
-    <div class="pod-header" @mousedown="startDrag">{{ pod }}<span v-if="killed"> (KILLED)</span></div>
+  <div terminal-view :class="{ terminated, resizing }" ref="el" @mousedown="$emit('order-up', pod)">
+    <div class="pod-header" @mousedown="startDrag">{{ pod }}</div>
     <div class="wrapper">
       <div class="box" ref="box"></div>
+      <div class="resizing"></div>
     </div>
     <div class="resize-handle" @mousedown="startResize"></div>
+    <div class="code-button" :class="{ pending }" @click="openWithCode"></div>
   </div>
 </template>
 
@@ -83,7 +92,10 @@ onMounted(async () => {
   .wrapper { .p(2); }
   .box { .pl(4); .wh(600,304); .crop; }
   .resize-handle { .abs; .rb; .wh(8); cursor: nwse-resize; }
-  &.killed { filter: brightness(50%); }
-  &.resizing .box { filter: blur(2px); }
+  .code-button { .abs; .rt(6,4); .wh(20); .pointer; background: url("@/assets/vscode-alt.svg");
+    &.pending { .o(0.5); .cursor; }
+  }
+  &.terminated { filter: brightness(50%); }
+  &.resizing .box { .hidden; }
 }
 </style>

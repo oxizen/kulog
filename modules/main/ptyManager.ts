@@ -1,6 +1,9 @@
+import { exec } from 'child_process';
 import pty, { IPty } from 'node-pty';
-import { ipcMain } from 'electron';
+import { ipcMain, app, shell } from 'electron';
 import MainWindow from '@main/mainWindow';
+import { writeFile } from 'fs';
+import { join } from 'path';
 
 const ptyMap: Record<number, IPty> = {};
 type ConnectParam = { namespace: string, pod: string, cols: number, rows: number, channel: number };
@@ -30,6 +33,18 @@ const init = (window: MainWindow) => {
     proc.kill();
     delete ptyMap[channel];
   });
+  ipcMain.handle('openWithCode', (e: unknown, namespace: string, pod: string) => new Promise<void>((resolve, reject) => {
+    exec(`kubectl logs -n ${namespace} ${pod}`, (e: unknown, out: string) => {
+      const file = join(app.getPath('temp'), `${pod}_${+new Date()}.txt`);
+      writeFile(file, out, e => {
+        if (e) reject(e);
+        else exec(`code ${file}`, e => {
+          if (e) shell.showItemInFolder(file);
+          resolve();
+        });
+      });
+    });
+  }));
 };
 
 export default { init };
