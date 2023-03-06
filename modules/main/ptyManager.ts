@@ -1,8 +1,7 @@
 import { exec } from 'child_process';
 import pty, { IPty } from 'node-pty';
-import { ipcMain, app, shell } from 'electron';
+import { app, ipcMain, shell } from 'electron';
 import MainWindow from '@main/mainWindow';
-import { writeFile } from 'fs';
 import { join } from 'path';
 
 const ptyMap: Record<number, IPty> = {};
@@ -11,7 +10,7 @@ type ResizeParam = { channel: number, cols: number, rows: number };
 
 const init = (window: MainWindow) => {
   ipcMain.handle('connectLog', (e: unknown, { namespace, pod, cols, rows, channel }: ConnectParam) => {
-    const proc = pty.spawn(process.platform === 'win32' ? 'kubectl.exe' : 'kubectl', ['logs','-f','-n', namespace, pod], { cols, rows });
+    const proc = pty.spawn(process.platform === 'win32' ? 'kubectl.exe' : 'kubectl', ['logs', `--tail=${rows*2}`,'-f','-n', namespace, pod], { cols, rows });
     proc.onData(log => {
       window.browserWindow.webContents.send('pty-log', { channel, log });
     });
@@ -34,14 +33,12 @@ const init = (window: MainWindow) => {
     delete ptyMap[channel];
   });
   ipcMain.handle('openWithCode', (e: unknown, namespace: string, pod: string) => new Promise<void>((resolve, reject) => {
-    exec(`kubectl logs -n ${namespace} ${pod}`, (e: unknown, out: string) => {
-      const file = join(app.getPath('temp'), `${pod}_${+new Date()}.txt`);
-      writeFile(file, out, e => {
-        if (e) reject(e);
-        else exec(`code ${file}`, e => {
-          if (e) shell.showItemInFolder(file);
-          resolve();
-        });
+    const file = join(app.getPath('temp'), `${pod}.txt`);
+    exec(`kubectl logs -n ${namespace} ${pod} > ${file}`, (e: unknown) => {
+      if (e) reject(e);
+      else exec(`code ${file}`, e => {
+        if (e) shell.showItemInFolder(file);
+        resolve();
       });
     });
   }));
