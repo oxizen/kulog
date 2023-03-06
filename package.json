@@ -13,7 +13,9 @@
     "start": "node scripts/dev.mjs",
     "dev": "cross-env VITE_DEBUG=1 yarn start",
     "prebuild": "rimraf dist",
-    "build": "node scripts/build.mjs"
+    "build:mac_arm64": "node scripts/build.mjs -t mac_arm64",
+    "build:mac_x64": "node scripts/build.mjs -t mac_x64",
+    "build:win_x64": "node scripts/build.mjs -t win_x64"
   },
   "dependencies": {
     "debounce": "^1.2.1",
