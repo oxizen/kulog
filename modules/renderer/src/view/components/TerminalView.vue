@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { useConnectLog } from '@/hooks/useConnectLog';
@@ -39,8 +39,9 @@ const startDrag = (e: MouseEvent) => setDrag(e, el.value, () => {
 });
 const startResize = (e:MouseEvent) => {
   resizing.value = true;
-  setResize(e, box.value, () => {
+  setResize(e, box.value, async () => {
     fitAddon.fit();
+    await nextTick();
     connection?.resize(terminal.cols, terminal.rows);
     resizing.value = false;
     alignState.setAlign('F');
@@ -65,6 +66,7 @@ onBeforeUnmount(() => terminal.dispose());
 onMounted(async () => {
   terminal.open(box.value!);
   fitAddon.fit();
+  await nextTick();
   connection = await useConnectLog(props.namespace, props.pod, terminal.cols, terminal.rows, (log, killEvent) => {
     if (killEvent) terminated.value = true;
     terminal.write(log);
