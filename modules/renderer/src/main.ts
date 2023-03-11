@@ -1,6 +1,6 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-import { init as connectInit } from '@/hooks/useConnectLog';
+import { init as connectInit } from '@/hooks/useConnectPod';
 import App from './App.vue';
 import router from './router';
 

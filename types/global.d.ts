@@ -2,8 +2,8 @@ type InlineConfig = import('vite').InlineConfig;
 type ViteDevServer = import('vite').ViteDevServer;
 type LogLevel = import('vite').LogLevel;
 
-type OnEventKey = 'pty-log' | 'pty-log-exit';
-type InvokeEventKey = 'connectLog' | 'killLog' | 'getConfig' | 'getNamespaceList' | 'setContext' | 'getDeploymentList' | 'getPods' | 'quitApp' | 'getPath' | 'resizeLog' | 'openWithCode';
+type OnEventKey = 'pty-out' | 'pty-exit' | 'closeWindow';
+type InvokeEventKey = 'connectTerminal' | 'killConnection' | 'getConfig' | 'getNamespaceList' | 'setContext' | 'getDeploymentList' | 'getPods' | 'quitApp' | 'getPath' | 'resizeTerminal' | 'openWithCode' | 'sendData';
 type AppModule = 'renderer' | 'main' | 'preload';
 
 declare namespace Electron {

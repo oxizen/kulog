@@ -39,9 +39,9 @@ export const setResize = (e: MouseEvent, target: HTMLElement | null, afterResize
   downMoveUp(e, resize, afterResize);
 };
 
-export const setPositions = (area: HTMLElement | null, align: AlignType) => {
+export const alignLogViews = (area: HTMLElement | null, align: AlignType) => {
   if (!area) return;
-  const panels = area.children;
+  const panels = area.querySelectorAll('[terminal-view].log');
   if (align === 'F') {
     let x = 0;
     let y = 0;
@@ -66,21 +66,50 @@ export const setPositions = (area: HTMLElement | null, align: AlignType) => {
     }
     const width = (area.offsetWidth / h) >> 0;
     const height = (area.offsetHeight / v) >> 0;
-    const boxWidth = width - 6;
-    const boxHeight = height - 35;
 
     let i = 0;
     for (const p of panels) {
       const panel = p as HTMLElement;
-      const box = panel.querySelector('.box') as HTMLElement;
+      setPanelSize(width, height, panel);
       const l = i % h;
       const t = (i / h) >> 0;
-      box.style.width = boxWidth + 'px';
-      box.style.height = boxHeight + 'px';
-      panel.style.width = width + 'px';
       panel.style.left = l * width + 'px';
       panel.style.top = t * height + 'px';
       i += 1;
     }
   }
 };
+
+let shellOffset = 0;
+export const setSinglePosition = (panel: HTMLElement | null) => {
+  if (!panel) return;
+  const parent = panel.offsetParent as HTMLElement;
+  if (!parent) return;
+  if (parent.querySelectorAll('[terminal-view].shell').length === 1) shellOffset = 0;
+  const width = parent.offsetWidth >> 1;
+  const height = parent.offsetHeight >> 1;
+  setPanelSize(width, height, panel);
+  panel.style.left = (width >> 1) + shellOffset + 'px';
+  panel.style.top = (height >> 1) + shellOffset + 'px';
+  shellOffset += 32;
+};
+
+export const setMaximize = (panel: HTMLElement | null) => {
+  if (!panel) return;
+  const parent = panel.offsetParent as HTMLElement;
+  if (!parent) return;
+  const width = parent.offsetWidth;
+  const height = parent.offsetHeight;
+  setPanelSize(width, height, panel);
+  panel.style.left = '0px';
+  panel.style.top = '0px';
+};
+
+const setPanelSize = (width: number, height: number, panel:HTMLElement) => {
+  const box = panel.querySelector('.box') as HTMLElement;
+  const boxWidth = width - 6;
+  const boxHeight = height - 35;
+  box.style.width = boxWidth + 'px';
+  box.style.height = boxHeight + 'px';
+  panel.style.width = width + 'px';
+}

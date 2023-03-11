@@ -167,3 +167,6 @@ interface Pod {
 }
 
 type PodList = Array<Pod>
+
+
+type ConnectType = 'log' | 'shell';
