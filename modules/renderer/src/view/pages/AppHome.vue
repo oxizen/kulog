@@ -22,6 +22,7 @@ const logViews = ref<TerminalView[]>( []);
 const shellViews = ref<TerminalView[]>( []);
 const align = () => {
   alignLogViews(el.value, alignState.align);
+  orderList.value = [...logList.value.map(l => l + '-log'), ...orderList.value.filter(l => l.endsWith('-shell'))];
   logViews.value?.forEach(t => t.fit());
 };
 watch(logState, async () => {

@@ -104,7 +104,7 @@ onMounted(async () => {
     <div class="pod-header" @mousedown="startDrag" @dblclick="maximize">
       <img src="@/assets/log.svg" v-if="type === 'log'">
       <img src="@/assets/shell.svg" v-else>
-      {{ pod }}
+      <span>{{ pod }}</span>
     </div>
     <div class="wrapper">
       <div class="box" ref="box"></div>
@@ -128,8 +128,9 @@ onMounted(async () => {
 @import "~@/less/proj.less";
 
 [terminal-view] { .-a(@panel-border); .bgc(@panel-bg); .abs; .z(1); .select-none;
-  .pod-header { .bgc(@panel-header); .c(@panel-title); .p(5,10,5,6); .rel; .nowrap; .ellipsis; .flex; .items-center; .gap(6); .monospace;
+  .pod-header { .bgc(@panel-header); .c(@panel-title); .p(5,10,5,6); .rel; .flex; .items-center; .gap(6); .monospace;
     img { .block; .wh(14); .-a(#fff); .br(4); .p(1,2); box-sizing: content-box; }
+    span { .w(calc(100% - 100px)); .nowrap; .ellipsis;  }
   }
   .wrapper { .p(2); }
   .box { .pl(4); .wh(600,304); .crop; }
@@ -153,7 +154,9 @@ onMounted(async () => {
   &.terminated { filter: brightness(50%); }
   &.resizing .box { .hidden; }
   &.shell { .-a(@shell-border);
-    .pod-header { .bgc(@shell-header); }
+    .pod-header { .bgc(@shell-header);
+      span { .w(calc(100% - 70px)); }
+    }
   }
   .terminal .xterm-viewport { .bgc(@panel-bg) !important; }
   .terminal.focus .xterm-viewport { .bgc(@panel-bg-focused) !important; }
