@@ -68,6 +68,10 @@ const openWithCode = async () => {
   pending.value = false;
 };
 
+const clearTerminal = () => {
+  terminal.clear();
+};
+
 watch(logState, () => {
   if (terminated.value && !logState.pending) {
     terminated.value = false;
@@ -107,12 +111,15 @@ onMounted(async () => {
       <div class="resizing"></div>
     </div>
     <div class="resize-handle" @mousedown="startResize"></div>
-    <div class="btn-list" v-if="type === 'log'">
-      <a class="shell-button" @mousedown.stop @click="$emit('open-shell', pod)"><img src="@/assets/shell.svg"></a>
-      <a class="code-button" @mousedown.stop :class="{ pending }" @click="openWithCode"><img src="@/assets/vscode-alt.svg"></a>
-    </div>
-    <div class="btn-list" v-if="type === 'shell'">
-      <a class="close-button" @mousedown.stop @click="$emit('close-shell', pod)"><img src="@/assets/close.svg"></a>
+    <div class="btn-list">
+      <template v-if="type === 'log'">
+        <a class="shell-button" @mousedown.stop @click="$emit('open-shell', pod)"><img src="@/assets/shell.svg"></a>
+        <a class="code-button" @mousedown.stop :class="{ pending }" @click="openWithCode"><img src="@/assets/vscode-alt.svg"></a>
+      </template>
+      <a class="clear-button" @mousedown.stop @click="clearTerminal"><img src="@/assets/discard.svg"></a>
+      <template v-if="type === 'shell'">
+        <a class="close-button" @mousedown.stop @click="$emit('close-shell', pod)"><img src="@/assets/close.svg"></a>
+      </template>
     </div>
   </div>
 </template>
@@ -137,6 +144,9 @@ onMounted(async () => {
       img { .block; .wh(14); .-a(#fff); .br(4); .p(1,2); box-sizing: content-box; }
     }
     .close-button { .pointer;
+      img { .wh(18); }
+    }
+    .clear-button { .pointer;
       img { .wh(18); }
     }
   }
