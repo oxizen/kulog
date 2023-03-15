@@ -13,11 +13,24 @@ const init = (window: MainWindow) => {
   ipcMain.handle('connectTerminal', (e: unknown, { namespace, pod, cols, rows, channel, type, grep }: ConnectParam) => {
     const isWin = process.platform === 'win32';
     const kubectl = isWin ? 'kubectl.exe' : 'kubectl';
-    const command = grep ? detectDefaultShell() : kubectl;
-    const arg = grep ? ['-c', `${kubectl} logs -f -n ${namespace} ${pod} | ${isWin ? 'findstr /a:E' : 'grep --color=always'} ${grep}`] : {
-      log: ['logs', `--tail=${rows*2}`, '-f', '-n', namespace, pod],
-      shell: ['exec', '-it', '-n', namespace, pod, '--', '/bin/sh', '-c', '(bash || ash || sh)'],
-    }[type];
+    let command, arg;
+    if (type === 'log') {
+      if (grep) {
+        command = detectDefaultShell();
+        const logs = `kubectl logs -f -n ${namespace} ${pod}`;
+        arg = isWin ? ['/k', `${logs} | findstr /a:E ${grep}`]
+                    : ['-c', `${logs} | grep --color=always ${grep}`];
+      } else {
+        command = kubectl;
+        arg = ['logs', `--tail=${rows*2}`, '-f', '-n', namespace, pod];
+      }
+    } else if (type === 'shell') {
+      command = kubectl;
+      arg = ['exec', '-it', '-n', namespace, pod, '--', '/bin/sh', '-c', '(bash || ash || sh)'];
+    } else {
+      throw 'not support type:' + type;
+    }
+
     const proc = pty.spawn(command, arg, { cols, rows });
     proc.onData(log => {
       window.browserWindow.webContents.send('pty-out', { channel, log });
