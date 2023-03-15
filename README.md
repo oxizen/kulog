@@ -9,6 +9,11 @@
 
 ![shell](https://user-images.githubusercontent.com/5800440/224507333-1fd082de-f490-4486-895e-bc89cd4bfaca.png)
 
+* grep log feature.
+  (right-click the log contents easy to set the keyword for grep)
+
+![grep](https://user-images.githubusercontent.com/5800440/225364764-45f97a4a-5b8a-42d5-a13b-3d41b421f713.png)
+
 ❗️Those who can already check logs with `kubectl` can use it. ❗
 
 * execute the command to run Mac(OSX) `xattr -cr /Applications/KULOG.app`

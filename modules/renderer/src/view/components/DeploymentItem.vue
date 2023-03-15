@@ -33,7 +33,7 @@ const progress = computed<boolean>(() => {
     <div v-if="info">
       <div :title="info.spec.template.spec.containers.map(c => c.image?.split('/').reverse()[0]).join('\n')">{{ info.metadata.name }}</div>
       <div class="status">
-        STATUS: <span title="Replicas">{{ info.status.replicas }}</span> / <span title="Available">{{ info.status.availableReplicas ?? 0 }}</span> / <span title="Unavailable">{{ info.status.unavailableReplicas ?? 0 }}</span>
+        STATUS: <span title="Replicas">{{ info.status.replicas ?? 0 }}</span> / <span title="Available">{{ info.status.availableReplicas ?? 0 }}</span> / <span title="Unavailable">{{ info.status.unavailableReplicas ?? 0 }}</span>
       </div>
     </div>
     <div v-else>ALL</div>
