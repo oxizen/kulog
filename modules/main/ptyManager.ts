@@ -18,8 +18,8 @@ const init = (window: MainWindow) => {
       if (grep) {
         command = detectDefaultShell();
         const logs = `kubectl logs -f -n ${namespace} ${pod}`;
-        arg = isWin ? ['/k', `${logs} | findstr /a:E ${grep}`]
-                    : ['-c', `${logs} | grep --color=always ${grep}`];
+        arg = isWin ? ['/k', `${logs} | findstr /a:E "${grep}"`]
+                    : ['-c', `${logs} | grep --color=always "${grep}"`];
       } else {
         command = kubectl;
         arg = ['logs', `--tail=${rows*2}`, '-f', '-n', namespace, pod];
