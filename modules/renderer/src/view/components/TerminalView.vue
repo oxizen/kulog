@@ -7,9 +7,8 @@ import { useConnectPod } from '@/hooks/useConnectPod';
 import { setDrag, setMaximize, setResize, setSinglePosition } from '@/utils/panelUtil';
 import { useAlignState } from '@/stores/alignState';
 import { useLogState } from '@/stores/logState';
-import { sleep } from '@main/utils';
 
-let connection: { resize: () => void, reconnect: () => void, send: (data: string) => void } | undefined;
+let connection: { resize: () => void, reconnect: () => void, send: (data: string) => void, grep: (str: string) => Promise<void> } | undefined;
 const logState = useLogState();
 const props = defineProps({
   namespace: { type: String, required: true },
@@ -81,12 +80,21 @@ watch(logState, () => {
 });
 onBeforeUnmount(() => terminal.dispose());
 onMounted(async () => {
-  terminal.open(box.value!);
+  if (!box.value) return;
+  terminal.open(box.value);
   if (props.type === 'shell') {
     const handler = terminal.onData(data => connection?.send(data));
     setSinglePosition(el.value);
     onBeforeUnmount(() => handler.dispose());
     terminal.focus();
+  } else {
+    box.value.addEventListener('contextmenu', () => {
+      const word = terminal.getSelection();
+      if (word) {
+        terminal.clear();
+        connection?.grep(word);
+      }
+    });
   }
   fitAddon.fit();
   connection = await useConnectPod(props.type, props.namespace, props.pod, terminal, (stdout, killEvent) => {

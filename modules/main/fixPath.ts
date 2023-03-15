@@ -1,10 +1,5 @@
 import { exec } from 'child_process';
-const detectDefaultShell = () => {
-  if (process.platform === 'win32') return process.env.COMSPEC || 'powershell.exe';
-  if (process.platform === 'darwin') return process.env.SHELL || '/bin/zsh';
-  return process.env.SHELL || '/bin/sh';
-};
-
+import { detectDefaultShell } from '@main/utils';
 const fix = () => new Promise<void>(resolve => {
   if (process.platform === 'win32') return resolve();
   const shell = detectDefaultShell();
