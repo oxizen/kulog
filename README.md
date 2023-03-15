@@ -1,9 +1,13 @@
 # KULOG
 
-* It is a tool that allows you to easily check k8s pod logs by opening them by <b>namespace</b> or <b>deployment</b> at once.
-* And it allows you to monitor deployment status.
+* It is a tool that allows you to easily check k8s pod logs by opening them by **namespace** or **deployment** at once.
+* You can open logs with **Visual Studio Code**
 
 ![SAMPLE](https://user-images.githubusercontent.com/5800440/222910878-e59abcba-7b77-4828-becd-0ae0c7f2e069.png)
+
+* Display deployment status.
+
+![deployment](https://user-images.githubusercontent.com/5800440/225370582-6a423c16-ccd3-4ff0-8a8a-62839aa3573c.png)
 
 * Simply press a button to connect to pod as shell.
 
