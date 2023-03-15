@@ -5,9 +5,8 @@ type Callback = (stdout: string, exitEvent?: ObjectLiteral) => void
 let sq = 0;
 const callbacks: Record<number, Callback> = {};
 export const useConnectPod = async (type: ConnectType, namespace: string, pod: string, terminal: Terminal, callback: Callback) => {
-  sq += 1;
-  const channel = sq;
-  const arg = { channel, namespace, pod, type, cols: 0, rows: 0 };
+  let channel = ++sq;
+  const arg = { channel, namespace, pod, type, cols: 0, rows: 0, grep: '' };
   callbacks[channel] = callback;
   onBeforeUnmount(() => {
     delete callbacks[channel];
@@ -29,6 +28,15 @@ export const useConnectPod = async (type: ConnectType, namespace: string, pod: s
     send: (data: string) => {
       window.app.invoke('sendData', channel, data);
     },
+    grep: async (str: string) => {
+      delete callbacks[channel];
+      await window.app.invoke('killConnection', channel);
+      arg.grep = str;
+      channel = ++sq;
+      callbacks[channel] = callback;
+      arg.channel = channel;
+      await window.app.invoke('connectTerminal', arg);
+    }
   };
 };
 
