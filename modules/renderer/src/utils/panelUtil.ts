@@ -112,4 +112,4 @@ const setPanelSize = (width: number, height: number, panel:HTMLElement) => {
   box.style.width = boxWidth + 'px';
   box.style.height = boxHeight + 'px';
   panel.style.width = width + 'px';
-}
+};

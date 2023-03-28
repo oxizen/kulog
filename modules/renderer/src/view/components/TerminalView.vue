@@ -82,7 +82,13 @@ const startResize = (e:MouseEvent) => {
     terminal.focus();
   });
 };
-const maximize = () => setMaximize(el.value);
+const maximize = async () => {
+  setMaximize(el.value);
+  fitAddon.fit();
+  connection?.resize();
+  await nextTick();
+  terminal.focus();
+};
 
 const pending = ref(false);
 const openWithCode = async () => {
