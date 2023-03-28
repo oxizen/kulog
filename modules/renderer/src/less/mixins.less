@@ -66,7 +66,7 @@
 .underline(@color) { .underline; text-decoration-color: @color; }
 .cnt(@v) { content: @v; }
 .cnt() { content: ''; .block; }
-.events-none { pointer-events: none; }
+.events-none() { pointer-events: none; }
 
 .sv(@v) {
   @_sv: if((isnumber(@v)),
@@ -217,9 +217,9 @@
 .ls(@v) { .sv(@v); letter-spacing: @_sv; }
 .va(@v) { .sv(@v); vertical-align: @_sv; }
 .ti(@v) { .sv(@v); text-indent: @_sv; }
-.monospace { font-family: monospace; }
-.small-caps { font-variant-caps: small-caps; }
-.all-small-caps { font-variant-caps: all-small-caps; }
+.monospace() { font-family: monospace; }
+.small-caps() { font-variant-caps: small-caps; }
+.all-small-caps() { font-variant-caps: all-small-caps; }
 
 .fill(@v) { fill: @v; }
 .stroke(@v) { stroke: @v; }
