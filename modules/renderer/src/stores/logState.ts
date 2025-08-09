@@ -7,6 +7,7 @@ export const useLogState = defineStore('logState', () => {
   const kubeConfig = useKubeConfig();
   const state = ref<LogState | null>(null);
   const pending = ref<boolean>(false);
+  const pods = ref<string[]>();
   const setLogState = (v: LogState) => {
     state.value = v;
     pending.value = true;
@@ -29,5 +30,5 @@ export const useLogState = defineStore('logState', () => {
 
   watch(kubeConfig, init);
 
-  return { state, pending, setLogState,  resetLogState, setPending, init };
+  return { state, pending, setLogState,  resetLogState, setPending, pods, init };
 });

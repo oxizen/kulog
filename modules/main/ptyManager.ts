@@ -4,6 +4,8 @@ import { app, ipcMain, shell } from 'electron';
 import MainWindow from '@main/mainWindow';
 import { join } from 'path';
 import { detectDefaultShell, sleep } from '@main/utils';
+import { randomUUID } from 'crypto';
+import fs from 'fs';
 
 const ptyMap: Record<number, IPty> = {};
 type ConnectParam = { type: ConnectType, namespace: string, pod: string, cols: number, rows: number, channel: number, grep?: string };
@@ -63,6 +65,21 @@ const init = (window: MainWindow) => {
         if (e) shell.showItemInFolder(file);
         resolve();
       });
+    });
+  }));
+  ipcMain.handle('openWithCodeAll', (e: unknown, namespace: string, pods: string) => new Promise<void>((resolve) => {
+    const uuid = randomUUID();
+    const folder = join(app.getPath('temp'), uuid);
+    fs.mkdirSync(folder);
+    for (const pod of pods.split(',')) {
+      const file = join(folder, `${pod}.txt`);
+      exec(`kubectl logs -n ${namespace} ${pod} > ${file}`, (e: unknown) => {
+        if (e) console.log(e);
+      });
+    }
+    exec(`code ${folder}`, e => {
+      if (e) shell.showItemInFolder(folder);
+      resolve();
     });
   }));
   ipcMain.handle('sendData', (e: unknown, channel: number, data: string) => ptyMap[channel].write(data));

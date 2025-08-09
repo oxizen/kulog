@@ -4,6 +4,7 @@ import { useAlignState } from '@/stores/alignState';
 import { useDrawerState } from '@/stores/drawerState';
 import { useLogState } from '@/stores/logState';
 import { useKubeState } from '@/stores/kubeState';
+import { ref } from 'vue';
 
 const kubeConfig = useKubeConfig();
 const logState = useLogState();
@@ -22,6 +23,13 @@ const getLabel = (val: string) => {
 };
 const close = () => window.app.invoke('quitApp');
 
+const pending = ref(false);
+const openWithCode = async () => {
+  pending.value = true;
+  await window.app.invoke('openWithCodeAll', logState.state?.namespace, logState.pods?.join(','));
+  pending.value = false;
+};
+
 </script>
 <template>
   <header app-header>
@@ -36,13 +44,14 @@ const close = () => window.app.invoke('quitApp');
       </button>
     </template>
     <div class="handle"></div>
+    <a class="code-button" v-if="logState.state" @mousedown.stop @click="openWithCode"><img src="@/assets/vscode-alt.svg"></a>
     <ul class="align">
-      <li v-for="v in 'FVH'" :key="v" :class="{ active: v === alignState.align }" @click="alignState.setAlign(v)">
-        <img v-if="v === 'F'" src="@/assets/free.png" alt="free">
-        <img v-else src="@/assets/align.png" alt="align" :class="v">
+      <li v-for="v in 'VH'" :key="v" :class="{ active: v === alignState.align }" @click="alignState.setAlign(v)">
+        <i class="icon-view_column" :class="v"></i>
       </li>
     </ul>
     <button class="close" @click="close"><img src="@/assets/close.svg" alt="close"></button>
+    <div class="spinner" v-if="pending"></div>
   </header>
 </template>
 
@@ -63,15 +72,15 @@ const close = () => window.app.invoke('quitApp');
   }
   .handle { .h(var(--header-height)); .flex-grow; .app-drag; }
   .align { .flex; .monospace; .bgc(#444); .fs(18); .br(4); .crop;
-    li { .p(2, 8); .pointer;
+    li { .pointer; .flex; .items-center; .justify-center; .fs(24); .p(2,4);
+      i.H { .t-r(90deg); }
       &.active { .bgc(#666); }
-      img { .wh(24); .block;
-        &.H { .t-r(90deg); }
-      }
     }
     li + li { .-l(#555); }
   }
   .close { .p(0, 5); }
-
+  .spinner { .fix; .lt-c; .t-xyc;
+    &:after { .cnt; .block; .wh(32); .mh-c; .-a(transparent, 6); .-v(#999, 6); .br(100%); animation: rotation .8s ease infinite; }
+  }
 }
 </style>

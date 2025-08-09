@@ -27,6 +27,7 @@ const align = () => {
 };
 watch(logState, async () => {
   logList.value = logState.state ? (await window.app.invoke<PodList>('getPods', logState.state.namespace, logState.state.filter)).map(p => p.NAME) : [];
+  logState.pods = logList.value;
   shellList.value = [];
   orderList.value = logList.value.map(l => l + '-log');
   logState.setPending(false);
